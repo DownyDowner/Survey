@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SurveyAPI.Data;
+using SurveyAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
 });
+
+builder.Services.AddScoped<QuestionService>();
 
 var app = builder.Build();
 
