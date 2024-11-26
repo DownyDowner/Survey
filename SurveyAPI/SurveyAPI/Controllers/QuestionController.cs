@@ -22,5 +22,10 @@ namespace SurveyAPI.Controllers {
         public async Task<ActionResult<List<QuestionList>>> GetAllExpiredQuestions() {
             return await service.GetAllExpiredQuestions();
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<QuestionFull>> GetQuestion([FromRoute] Guid id) { 
+            return await service.GetQuestion(id);
+        }
     }
 }

@@ -35,5 +35,13 @@ namespace SurveyAPI.Services {
 
             return entities.Select(e => e.ToDTOList()).ToList();
         }
+
+        public async Task<QuestionFull> GetQuestion(Guid id) {
+            var entities = await dataContext.Questions
+                .Include(e => e.Choices)
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            return entities.ToDTOFull();
+        }
     }
 }
