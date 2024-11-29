@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SurveyAPI.Data;
 using SurveyAPI.Models;
 
@@ -37,11 +36,14 @@ namespace SurveyAPI.Services {
         }
 
         public async Task<QuestionFull> GetQuestion(Guid id) {
-            var entities = await dataContext.Questions
+            var entity = await dataContext.Questions
                 .Include(e => e.Choices)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
-            return entities.ToDTOFull();
+            if (entity == null)
+                throw new InvalidOperationException();
+
+            return entity.ToDTOFull();
         }
     }
 }
