@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SurveyAPI.Models;
 using SurveyAPI.Services;
@@ -6,7 +7,7 @@ using SurveyAPI.Services;
 namespace SurveyAPI.Controllers {
     [Route("api/questions")]
     [ApiController]
-    public class QuestionController(QuestionService service) : ControllerBase {
+    public class QuestionController(QuestionService service, UserManager<IdentityUser> userManager) : ControllerBase {
         [HttpPost, Authorize]
         public async Task<ActionResult<Guid>> Create(QuestionFull question) {
             return await service.Create(question);
@@ -25,6 +26,19 @@ namespace SurveyAPI.Controllers {
         [HttpGet("{id}"), Authorize]
         public async Task<ActionResult<QuestionFull>> GetQuestion([FromRoute] Guid id) { 
             return await service.GetQuestion(id);
+        }
+
+        [HttpPost("{id}/submit"), Authorize]
+        public async Task<ActionResult> Submit([FromRoute] Guid id, [FromBody] List<Guid> choiceIds) {
+            string? userId = userManager.GetUserId(User);
+
+            if (string.IsNullOrEmpty(userId)) {
+                return Unauthorized(new { Message = "User is not authorized" });
+            }
+
+            await service.Submit(id, userId, choiceIds);
+
+            return Ok();
         }
     }
 }

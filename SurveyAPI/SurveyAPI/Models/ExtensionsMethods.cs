@@ -36,5 +36,11 @@ namespace SurveyAPI.Models {
             Id = entity.Id,
             Name = entity.Name,
         };
+
+        public static ResponseEntity ToEntity(string userId, Guid choiceId, DateTime responseDate) => new() {
+            IdUser = userId,
+            IdChoice = choiceId,
+            ResponseDate = responseDate
+        };
     }
 }

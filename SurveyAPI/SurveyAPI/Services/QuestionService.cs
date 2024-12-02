@@ -45,5 +45,36 @@ namespace SurveyAPI.Services {
 
             return entity.ToDTOFull();
         }
+
+        public async Task Submit(Guid id, string userId, List<Guid> choiceIds) {
+            var entity = await dataContext.Questions
+                .Include(e => e.Choices)
+                .FirstOrDefaultAsync (e => e.Id == id);
+
+            DateTime today = DateTime.Now.ToUniversalTime();
+
+            if (entity == null)
+                throw new InvalidOperationException("Question not found.");
+
+            if (entity.Choices == null || !entity.Choices.Any())
+                throw new InvalidOperationException("Choices not found.");
+
+            if (today < entity.BeginDate || today > entity.EndDate)
+                throw new InvalidOperationException("The current date is not within the valid date range for this question.");
+
+            if (!entity.Multiple && choiceIds.Count() > 1)
+                throw new InvalidOperationException("Multiple choices are not allowed for this question.");
+
+            foreach (var choiceId in choiceIds) {
+                if (!entity.Choices.Any(c => c.Id == choiceId))
+                    throw new InvalidOperationException($"Choice {choiceId} is not valid for this question.");
+
+                var response = ExtensionsMethods.ToEntity(userId, choiceId, today);
+
+                dataContext.Responses.Add(response);
+            }
+
+            await dataContext.SaveChangesAsync();
+        }
     }
 }
