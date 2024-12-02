@@ -25,9 +25,23 @@ namespace SurveyAPI.Data {
                     .WithMany(e => e.Choices)
                     .HasForeignKey(e => e.IdQuestion);
             });
+
+            modelBuilder.Entity<ResponseEntity>(builder => {
+                builder.HasKey(e => e.Id);
+                builder.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                builder.HasOne(e => e.Choice)
+                    .WithMany(e => e.Responses)
+                    .HasForeignKey(e => e.IdChoice);
+
+                builder.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.IdUser);
+            });
         }
 
         public DbSet<QuestionEntity> Questions { get; set; }
         public DbSet<ChoiceEntity> Choices { get; set; }
+        public DbSet<ResponseEntity> Responses { get; set; }
     }
 }

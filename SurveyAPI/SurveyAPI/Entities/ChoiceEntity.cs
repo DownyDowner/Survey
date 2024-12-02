@@ -5,5 +5,6 @@
         public Guid IdQuestion { get; set; }
 
         public QuestionEntity? Question { get; set; }
+        public ICollection<ResponseEntity>? Responses { get; set; }
     }
 }
