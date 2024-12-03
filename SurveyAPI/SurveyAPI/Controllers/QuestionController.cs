@@ -28,6 +28,11 @@ namespace SurveyAPI.Controllers {
             return await service.GetQuestion(id);
         }
 
+        [HttpGet("{id}/stats"), Authorize]
+        public async Task<ActionResult<QuestionStats>> GetQuestionStats([FromRoute] Guid id) {
+            return await service.GetQuestionStats(id);
+        }
+
         [HttpPost("{id}/submit"), Authorize]
         public async Task<ActionResult> Submit([FromRoute] Guid id, [FromBody] List<Guid> choiceIds) {
             string? userId = userManager.GetUserId(User);

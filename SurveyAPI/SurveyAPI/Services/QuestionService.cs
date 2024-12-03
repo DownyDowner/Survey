@@ -5,7 +5,7 @@ using SurveyAPI.Models;
 namespace SurveyAPI.Services {
     public class QuestionService(DataContext dataContext) {
 
-        public async Task<Guid> Create(QuestionFull question) { 
+        public async Task<Guid> Create(QuestionFull question) {
             var entity = question.ToEntity();
             await dataContext.Questions.AddAsync(entity);
             await dataContext.SaveChangesAsync();
@@ -46,10 +46,33 @@ namespace SurveyAPI.Services {
             return entity.ToDTOFull();
         }
 
+        public async Task<QuestionStats> GetQuestionStats(Guid id) {
+            var question = await dataContext.Questions
+                .Select(q => new QuestionStats {
+                    Id = q.Id,
+                    Name = q.Name,
+                    BeginDate = q.BeginDate,
+                    EndDate = q.EndDate,
+                    Multiple = q.Multiple,
+                    Choices = q.Choices != null
+                    ? q.Choices.Select(c => new ChoiceStats {
+                        Id = c.Id,
+                        Name = c.Name,
+                        VoteCount = c.Responses != null ? c.Responses.Count : 0
+                    }).ToList() : new List<ChoiceStats>()
+                })
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (question == null)
+                throw new InvalidOperationException("Question not found.");
+
+            return question;
+        }
+
         public async Task Submit(Guid id, string userId, List<Guid> choiceIds) {
             var entity = await dataContext.Questions
                 .Include(e => e.Choices)
-                .FirstOrDefaultAsync (e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             DateTime today = DateTime.Now.ToUniversalTime();
 
