@@ -32,6 +32,13 @@ builder.Services.AddDbContext<DataContext>(options => {
 
 builder.Services.AddScoped<QuestionService>();
 
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowFrontend",
+        builder => builder.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +50,8 @@ if (app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("AllowFrontend");
 
 app.MapControllers();
 
