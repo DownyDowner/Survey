@@ -75,7 +75,7 @@ const authModel = reactive({
 async function login() {
   try {
     await authStore.login(authModel.email, authModel.password);
-    console.log("Success");
+    router.push({ name: NavigationConst.nameHome });
   } catch (err) {
     authModel.errorMessages =
       "Échec de la connexion. Veuillez vérifier vos identifiants et réessayer";

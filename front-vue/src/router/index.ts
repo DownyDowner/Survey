@@ -22,6 +22,18 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: checkIsNotAuthenticated,
     meta: { title: NavigationConst.titleRegister },
   },
+  {
+    path: NavigationConst.routeHome,
+    beforeEnter: checkIsAuthenticated,
+    children: [
+      {
+        path: "",
+        name: NavigationConst.nameHome,
+        component: () => import("../views/questions/ActiveQuestions.vue"),
+        meta: { title: NavigationConst.titleHome },
+      },
+    ],
+  },
 ];
 
 const router = createRouter({
