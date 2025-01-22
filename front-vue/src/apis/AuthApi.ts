@@ -22,6 +22,26 @@ export abstract class AuthApi {
     return response.data;
   }
 
+  static async logout(): Promise<void> {
+    const token = localStorage.getItem("Auth-Token");
+    if (!token) return;
+
+    try {
+      await axios.post(
+        `${AuthApi.API_URL}/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      localStorage.removeItem("Auth-Token");
+    } catch (error) {
+      throw error;
+    }
+  }
+
   static async getUser(token: string) {
     const response = await axios.get(`${AuthApi.API_URL}/users/me`, {
       headers: {

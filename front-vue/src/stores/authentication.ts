@@ -34,6 +34,18 @@ export const useAuthenticationStore = defineStore("authentication", () => {
     }
   }
 
+  async function logout(): Promise<void> {
+    try {
+      isLoading.value = true;
+      await AuthApi.logout();
+      resetToken();
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   async function loadUser(): Promise<void> {
     if (!token.value) {
       user.value = null;
@@ -59,6 +71,7 @@ export const useAuthenticationStore = defineStore("authentication", () => {
     email,
     register,
     login,
+    logout,
     loadUser,
   };
 });
