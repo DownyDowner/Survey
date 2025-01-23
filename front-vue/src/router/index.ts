@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     beforeEnter: checkIsAuthenticated,
     children: [
       {
-        path: "",
+        path: NavigationConst.routeHome,
         name: NavigationConst.nameHome,
         component: () => import("../views/questions/ActiveQuestions.vue"),
         meta: { title: NavigationConst.titleHome },
