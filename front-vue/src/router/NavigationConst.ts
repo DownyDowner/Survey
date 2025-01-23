@@ -10,4 +10,9 @@ export class NavigationConst {
   public static readonly routeRegister = "/register";
   public static readonly nameRegister = "Register";
   public static readonly titleRegister = "Enregistrement";
+
+  // List active questions
+  public static readonly routeHome = "/home";
+  public static readonly nameHome = "Home";
+  public static readonly titleHome = "Home";
 }

@@ -6,6 +6,7 @@ import {
 } from "vue-router";
 import { useAuthenticationStore } from "../stores/authentication";
 import { NavigationConst } from "./NavigationConst";
+import LayoutConnected from "../layouts/LayoutConnected.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,6 +22,19 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/authentication/Register.vue"),
     beforeEnter: checkIsNotAuthenticated,
     meta: { title: NavigationConst.titleRegister },
+  },
+  {
+    path: "",
+    component: LayoutConnected,
+    beforeEnter: checkIsAuthenticated,
+    children: [
+      {
+        path: NavigationConst.routeHome,
+        name: NavigationConst.nameHome,
+        component: () => import("../views/questions/ActiveQuestions.vue"),
+        meta: { title: NavigationConst.titleHome },
+      },
+    ],
   },
 ];
 
