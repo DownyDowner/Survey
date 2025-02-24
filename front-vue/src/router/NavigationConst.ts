@@ -4,12 +4,12 @@ export class NavigationConst {
   // Login
   public static readonly routeLogin = "/";
   public static readonly nameLogin = "Login";
-  public static readonly titleLogin = "Connexion";
+  public static readonly titleLogin = "Connection";
 
   // Register
   public static readonly routeRegister = "/register";
   public static readonly nameRegister = "Register";
-  public static readonly titleRegister = "Enregistrement";
+  public static readonly titleRegister = "Registration";
 
   // List active questions
   public static readonly routeHome = "/home";

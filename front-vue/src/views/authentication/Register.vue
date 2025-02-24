@@ -6,8 +6,8 @@
   >
     <v-card rounded="lg" style="max-width: 400px" class="mx-auto my-auto">
       <v-card-title style="word-break: keep-all">
-        <h2 class="text-primary text-center">Enregistrement</h2>
-        <h4 class="text-center mt-2">Veuillez entrer vos identifiants</h4>
+        <h2 class="text-primary text-center">Registration</h2>
+        <h4 class="text-center mt-2">Please enter your credentials</h4>
       </v-card-title>
       <v-card-text class="mt-5">
         <v-form v-model="isValid">
@@ -22,7 +22,7 @@
           />
           <v-text-field
             class="mb-2"
-            label="Mot de passe"
+            label="Password"
             rounded="lg"
             prepend-inner-icon="mdi-lock"
             :append-inner-icon="showPassword ? `mdi-eye` : 'mdi-eye-off'"
@@ -33,7 +33,7 @@
           />
           <v-text-field
             class="mb-2"
-            label="Confirmation du mot de passe"
+            label="Confirm Password"
             rounded="lg"
             prepend-inner-icon="mdi-lock"
             :append-inner-icon="showConfirmPassword ? `mdi-eye` : 'mdi-eye-off'"
@@ -44,12 +44,12 @@
             @click:append-inner="showConfirmPassword = !showConfirmPassword"
           />
           <v-alert v-if="passwordsMismatch" type="error" outlined class="mb-2">
-            Les mots de passe ne correspondent pas.
+            Passwords do not match.
           </v-alert>
         </v-form>
 
         <v-btn color="primary" block :disabled="!isValid" @click.stop="signUp">
-          S'enregistrer
+          Register
         </v-btn>
         <v-btn
           @click.stop="backToLogin"
@@ -57,7 +57,7 @@
           variant="flat"
           block
         >
-          Annuler
+          Cancel
         </v-btn>
       </v-card-text>
       <v-alert
@@ -80,7 +80,7 @@ import { NavigationConst } from "../../router/NavigationConst";
 
 const authStore = useAuthenticationStore();
 
-const stringRules = ref<any[]>([(v: string) => !!v || "Valeur obligatoire"]);
+const stringRules = ref<any[]>([(v: string) => !!v || "Required field"]);
 const showPassword = ref<boolean>(false);
 const showConfirmPassword = ref<boolean>(false);
 const isValid = ref<boolean>(true);
@@ -104,7 +104,7 @@ async function signUp() {
       confirmPassword.value = "";
     }
   } catch (err) {
-    authModel.errorMessages = "Échec de l'enregistrement. Veuillez réessayer";
+    authModel.errorMessages = "Registration failed. Please try again.";
   }
 }
 

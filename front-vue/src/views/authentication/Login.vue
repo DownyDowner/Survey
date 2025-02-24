@@ -2,8 +2,8 @@
   <v-container fluid class="d-flex align-center justify-center">
     <v-card rounded="lg" style="width: 400px">
       <v-card-title class="text-center">
-        <h2 class="text-primary">Connexion</h2>
-        <h4 class="mt-2">Veuillez entrer vos identifiants</h4>
+        <h2 class="text-primary">Login</h2>
+        <h4 class="mt-2">Please enter your credentials</h4>
       </v-card-title>
       <v-card-text class="mt-5">
         <v-form v-model="isValid">
@@ -18,7 +18,7 @@
           />
           <v-text-field
             class="mb-2"
-            label="Mot de passe"
+            label="Password"
             rounded="lg"
             prepend-inner-icon="mdi-lock"
             :append-inner-icon="showPassword ? `mdi-eye` : 'mdi-eye-off'"
@@ -31,7 +31,7 @@
         </v-form>
 
         <v-btn color="primary" block :disabled="!isValid" @click.stop="login">
-          Connexion
+          Login
         </v-btn>
         <v-btn
           color="grey-lighten-3 mt-1"
@@ -39,7 +39,7 @@
           block
           @click.stop="createAccount"
         >
-          Créer un compte
+          Create an account
         </v-btn>
       </v-card-text>
       <v-alert
@@ -62,7 +62,7 @@ import { NavigationConst } from "../../router/NavigationConst";
 
 const authStore = useAuthenticationStore();
 
-const stringRules = ref<any[]>([(v: string) => !!v || "Valeur obligatoire"]);
+const stringRules = ref<any[]>([(v: string) => !!v || "Required field"]);
 const showPassword = ref<boolean>(false);
 const isValid = ref<boolean>(true);
 
@@ -78,7 +78,7 @@ async function login() {
     router.push({ name: NavigationConst.nameHome });
   } catch (err) {
     authModel.errorMessages =
-      "Échec de la connexion. Veuillez vérifier vos identifiants et réessayer";
+      "Login failed. Please check your credentials and try again.";
     authModel.password = "";
   }
 }
