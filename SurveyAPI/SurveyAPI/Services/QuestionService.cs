@@ -24,7 +24,7 @@ namespace SurveyAPI.Services {
             return entities.Select(e => e.ToDTOList()).ToList();
         }
 
-        public async Task<List<QuestionList>> GetAllExpiredQuestions() {
+        public async Task<List<QuestionList>> GetAllClosedQuestions() {
             DateTime today = DateTime.Now.ToUniversalTime();
 
             var entities = await dataContext.Questions

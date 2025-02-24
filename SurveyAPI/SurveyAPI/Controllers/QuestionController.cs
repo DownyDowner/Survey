@@ -18,9 +18,9 @@ namespace SurveyAPI.Controllers {
             return await service.GetAllActiveQuestions();
         }
 
-        [HttpGet("expired"), Authorize]
-        public async Task<ActionResult<List<QuestionList>>> GetAllExpiredQuestions() {
-            return await service.GetAllExpiredQuestions();
+        [HttpGet("close"), Authorize]
+        public async Task<ActionResult<List<QuestionList>>> GetAllClosedQuestions() {
+            return await service.GetAllClosedQuestions();
         }
 
         [HttpGet("{id}"), Authorize]
