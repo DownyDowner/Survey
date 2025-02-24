@@ -1,5 +1,5 @@
 <template>
-  <v-list>
+  <v-list v-if="props.questions.length > 0">
     <v-list-item
       v-for="question in props.questions"
       :key="question.id"
@@ -11,6 +11,9 @@
       </template>
     </v-list-item>
   </v-list>
+  <v-alert v-else type="info" variant="outlined">
+    No questions available at this time.
+  </v-alert>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +21,7 @@ import { QuestionList } from "../../../models/question/QuestionList";
 
 const props = defineProps<{
   questions: QuestionList[];
+  isClosed: boolean;
 }>();
 
 function formatDateRange(beginDate: string, endDate: string): string {

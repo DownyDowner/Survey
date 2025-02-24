@@ -6,6 +6,7 @@ import { QuestionApi } from "../apis/QuestionApi";
 export const useQuestionStore = defineStore("question", () => {
   const isLoading = ref(false);
   const activeQuestions: Ref<QuestionList[]> = ref([]);
+  const closedQuestions: Ref<QuestionList[]> = ref([]);
 
   async function getAllActiveQuestions(): Promise<void> {
     try {
@@ -18,9 +19,22 @@ export const useQuestionStore = defineStore("question", () => {
     }
   }
 
+  async function getAllClosedQuestions(): Promise<void> {
+    try {
+      isLoading.value = true;
+      closedQuestions.value = await QuestionApi.getAllClosedQuestions();
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   return {
     isLoading,
     activeQuestions,
+    closedQuestions,
     getAllActiveQuestions,
+    getAllClosedQuestions,
   };
 });

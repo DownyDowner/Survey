@@ -17,4 +17,16 @@ export abstract class QuestionApi {
 
     return response.data.map((d) => new QuestionList(d));
   }
+
+  static async getAllClosedQuestions(): Promise<QuestionList[]> {
+    const response = await axios.get<QuestionListDTO[]>(
+      `${this.API_URL}/close`,
+      {
+        headers: { Authorization: "Bearer " + this.authStore.token },
+        responseType: "json",
+      }
+    );
+
+    return response.data.map((d) => new QuestionList(d));
+  }
 }

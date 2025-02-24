@@ -16,6 +16,15 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item>
+        <v-list-item @click="closedQuestions">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-bar</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Closed Questions</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item></v-list-item>
         <v-list-item-content>
           <v-list-item-title>{{ email }}</v-list-item-title>
         </v-list-item-content>
@@ -43,6 +52,12 @@
         <v-btn @click.stop="home" class="d-flex align-center">
           <v-icon left>mdi-home</v-icon>
           <span>Home</span>
+        </v-btn>
+      </v-col>
+      <v-col cols="auto" class="d-none d-md-flex">
+        <v-btn @click.stop="closedQuestions" class="d-flex align-center">
+          <v-icon left>mdi-chart-bar</v-icon>
+          <span>Closed Questions</span>
         </v-btn>
       </v-col>
       <v-spacer></v-spacer>
@@ -95,6 +110,10 @@ function displayRoute() {
 
 function home() {
   router.push({ name: NavigationConst.nameHome });
+}
+
+function closedQuestions() {
+  router.push({ name: NavigationConst.nameClosed });
 }
 
 async function logout() {

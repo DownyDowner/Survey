@@ -2,8 +2,8 @@
   <v-container>
     <QuestionsList
       ref="questionList"
-      :questions="questionStore.activeQuestions"
-      :is-closed="false"
+      :questions="questionStore.closedQuestions"
+      :is-closed="true"
     />
   </v-container>
 </template>
@@ -18,10 +18,11 @@ const questionStore = useQuestionStore();
 const questionList = ref<InstanceType<typeof QuestionsList> | null>(null);
 
 onMounted(async () => {
-  await loadActiveQuestions();
+  await loadClosedQuestions();
+  questionList.value?.$forceUpdate;
 });
 
-async function loadActiveQuestions() {
-  await questionStore.getAllActiveQuestions();
+async function loadClosedQuestions() {
+  await questionStore.getAllClosedQuestions();
 }
 </script>
