@@ -67,4 +67,13 @@ app.MapPost("logout", async (SignInManager<IdentityUser> signInManager) => {
     return Results.Ok(new { message = "Logged out successfully" });
 }).RequireAuthorization();
 
+using (var scope = app.Services.CreateScope()) {
+    var services = scope.ServiceProvider;
+    var dbContext = services.GetRequiredService<DataContext>();
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+    var seeder = new DatabaseSeeder(dbContext, userManager);
+    await seeder.SeedAsync();
+}
+
 app.Run();
