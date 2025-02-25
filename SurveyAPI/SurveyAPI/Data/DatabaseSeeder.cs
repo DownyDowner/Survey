@@ -118,19 +118,44 @@ public class DatabaseSeeder {
         }
 
         var user1 = await _userManager.FindByEmailAsync("user1@example.com");
-        var choices = _context.Set<ChoiceEntity>().ToList();
+        var user2 = await _userManager.FindByEmailAsync("user2@example.com");
+        var user3 = await _userManager.FindByEmailAsync("user3@example.com");
+        var allUsers = new List<IdentityUser> { user1, user2, user3 };
+        var random = new Random();
 
-        if (user1 != null && choices.Any()) {
-            var responses = new List<ResponseEntity>
-            {
-                new ResponseEntity
-                {
-                    Id = Guid.NewGuid(),
-                    IdUser = user1.Id,
-                    IdChoice = choices.First().Id,
-                    ResponseDate = DateTime.UtcNow
+        foreach (var user in allUsers) {
+            var responses = new List<ResponseEntity>();
+
+            foreach (var question in questions) {
+                if (question.Multiple) {
+                    var selectedChoices = question.Choices
+                        .OrderBy(x => random.Next())
+                        .Take(random.Next(1, 3))
+                        .ToList();
+
+                    foreach (var choice in selectedChoices) {
+                        responses.Add(new ResponseEntity {
+                            Id = Guid.NewGuid(),
+                            IdUser = user.Id,
+                            IdChoice = choice.Id,
+                            ResponseDate = DateTime.UtcNow
+                        });
+                    }
+                } else {
+                    var selectedChoice = question.Choices
+                        .OrderBy(x => random.Next())
+                        .FirstOrDefault();
+
+                    if (selectedChoice != null) {
+                        responses.Add(new ResponseEntity {
+                            Id = Guid.NewGuid(),
+                            IdUser = user.Id,
+                            IdChoice = selectedChoice.Id,
+                            ResponseDate = DateTime.UtcNow
+                        });
+                    }
                 }
-            };
+            }
 
             await _context.Set<ResponseEntity>().AddRangeAsync(responses);
             await _context.SaveChangesAsync();
