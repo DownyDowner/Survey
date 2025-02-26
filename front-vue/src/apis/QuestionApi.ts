@@ -20,7 +20,7 @@ export abstract class QuestionApi {
 
   static async getAllClosedQuestions(): Promise<QuestionList[]> {
     const response = await axios.get<QuestionListDTO[]>(
-      `${this.API_URL}/close`,
+      `${this.API_URL}/closed`,
       {
         headers: { Authorization: "Bearer " + this.authStore.token },
         responseType: "json",
