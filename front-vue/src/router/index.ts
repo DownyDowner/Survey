@@ -40,6 +40,13 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/questions/ClosedQuestions.vue"),
         meta: { title: NavigationConst.titleClosed },
       },
+      {
+        path: NavigationConst.routeClosedDetails,
+        name: NavigationConst.nameClosedDetails,
+        component: () =>
+          import("../views/questions/ClosedQuestionsDetails.vue"),
+        meta: { title: NavigationConst.titleClosedDetails },
+      },
     ],
   },
 ];
