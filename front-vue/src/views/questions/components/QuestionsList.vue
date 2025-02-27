@@ -7,7 +7,12 @@
       :subtitle="formatDateRange(question.beginDate, question.endDate)"
     >
       <template v-slot:append>
-        <v-btn color="primary" icon="mdi-chevron-right" variant="text" />
+        <v-btn
+          color="primary"
+          icon="mdi-chevron-right"
+          variant="text"
+          @click.stop="openDetailsQuestion(question)"
+        />
       </template>
     </v-list-item>
   </v-list>
@@ -18,6 +23,8 @@
 
 <script setup lang="ts">
 import { QuestionList } from "../../../models/question/QuestionList";
+import router from "../../../router";
+import { NavigationConst } from "../../../router/NavigationConst";
 
 const props = defineProps<{
   questions: QuestionList[];
@@ -29,5 +36,14 @@ function formatDateRange(beginDate: string, endDate: string): string {
   const end = new Date(endDate).toLocaleDateString();
 
   return `From ${begin} to ${end}`;
+}
+
+function openDetailsQuestion(question: QuestionList) {
+  if (props.isClosed) {
+    router.push({
+      name: NavigationConst.nameClosedDetails,
+      params: { id: question.id },
+    });
+  }
 }
 </script>

@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { Ref, ref } from "vue";
 import { QuestionList } from "../models/question/QuestionList";
 import { QuestionApi } from "../apis/QuestionApi";
+import { QuestionStats } from "../models/question/QuestionStats";
 
 export const useQuestionStore = defineStore("question", () => {
   const isLoading = ref(false);
@@ -30,11 +31,23 @@ export const useQuestionStore = defineStore("question", () => {
     }
   }
 
+  async function getQuestionStats(id: string): Promise<QuestionStats> {
+    try {
+      isLoading.value = true;
+      return await QuestionApi.getQuestionStats(id);
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   return {
     isLoading,
     activeQuestions,
     closedQuestions,
     getAllActiveQuestions,
     getAllClosedQuestions,
+    getQuestionStats,
   };
 });

@@ -19,7 +19,6 @@ const questionList = ref<InstanceType<typeof QuestionsList> | null>(null);
 
 onMounted(async () => {
   await loadClosedQuestions();
-  questionList.value?.$forceUpdate;
 });
 
 async function loadClosedQuestions() {
