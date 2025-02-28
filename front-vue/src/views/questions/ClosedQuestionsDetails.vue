@@ -42,8 +42,10 @@ import { QuestionStats } from "../../models/question/QuestionStats";
 import { NavigationConst } from "../../router/NavigationConst";
 import { AgCharts } from "ag-charts-vue3";
 import type { AgChartOptions } from "ag-charts-community";
+import { useNotificationStore } from "../../stores/notification";
 
 const questionStore = useQuestionStore();
+const notificationStore = useNotificationStore();
 const question: Ref<QuestionStats> = ref(new QuestionStats(null));
 const chartOptions = ref<AgChartOptions | undefined>(undefined);
 
@@ -67,6 +69,9 @@ async function loadQuestionStats() {
       series: [{ type: "pie", angleKey: "voteCount", calloutLabelKey: "name" }],
     };
   } catch (error) {
+    notificationStore.showError(
+      "An error occurred while loading the question stats."
+    );
     router.push({ name: NavigationConst.nameClosed });
   }
 }
