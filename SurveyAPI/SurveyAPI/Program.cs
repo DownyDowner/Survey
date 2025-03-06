@@ -1,3 +1,4 @@
+using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -7,6 +8,8 @@ using Swashbuckle.AspNetCore.Filters;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 // Add services to the container.
 
@@ -26,8 +29,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<DataContext>();
 
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+                      ?? builder.Configuration.GetConnectionString("WebApiDatabase");
+
 builder.Services.AddDbContext<DataContext>(options => {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase"));
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddScoped<QuestionService>();
