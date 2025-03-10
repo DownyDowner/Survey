@@ -1,12 +1,14 @@
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SurveyAPI.Constants;
 using SurveyAPI.Data;
+using SurveyAPI.Extensions;
 using SurveyAPI.Services;
-using Swashbuckle.AspNetCore.Filters;
-using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,19 +19,30 @@ Env.Load();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme {
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-    });
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-});
+builder.Services.AddSwaggerGenWithAuth();
 
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-    .AddRoles<IdentityRole>()
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>();
+
+string secretKey = Environment.GetEnvironmentVariable("JWT__Key")!;
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters() {
+        ValidateActor = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        RequireExpirationTime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = Environment.GetEnvironmentVariable("JWT__Issuer"),
+        ValidAudience = Environment.GetEnvironmentVariable("JWT__Audience"),
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(secretKey)
+        )
+    };
+});
 
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
                       ?? builder.Configuration.GetConnectionString("WebApiDatabase");
@@ -57,23 +70,12 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors("AllowFrontend");
 
 app.MapControllers();
-
-app.MapIdentityApi<IdentityUser>();
-
-app.MapGet("users/me", async (ClaimsPrincipal claims, DataContext context) => {
-    string userId = claims.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-    return await context.Users.FindAsync(userId);
-}).RequireAuthorization();
-
-app.MapPost("logout", async (SignInManager<IdentityUser> signInManager) => {
-    await signInManager.SignOutAsync();
-    return Results.Ok(new { message = "Logged out successfully" });
-}).RequireAuthorization();
 
 using (var scope = app.Services.CreateScope()) {
     var services = scope.ServiceProvider;
