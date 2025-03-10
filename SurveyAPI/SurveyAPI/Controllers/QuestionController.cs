@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SurveyAPI.Constants;
 using SurveyAPI.Models;
 using SurveyAPI.Services;
 
@@ -8,7 +9,7 @@ namespace SurveyAPI.Controllers {
     [Route("api/questions")]
     [ApiController]
     public class QuestionController(QuestionService service, UserManager<IdentityUser> userManager) : ControllerBase {
-        [HttpPost, Authorize]
+        [HttpPost, Authorize(Roles = RoleConstants.ADMIN)]
         public async Task<ActionResult<Guid>> Create(QuestionFull question) {
             return await service.Create(question);
         }

@@ -2,6 +2,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SurveyAPI.Constants;
 using SurveyAPI.Data;
 using SurveyAPI.Services;
 using Swashbuckle.AspNetCore.Filters;
@@ -27,6 +28,7 @@ builder.Services.AddSwaggerGen(options => {
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<DataContext>();
 
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
@@ -77,6 +79,14 @@ using (var scope = app.Services.CreateScope()) {
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { RoleConstants.USER, RoleConstants.ADMIN };
+    foreach (var role in roles) {
+        if(!await roleManager.RoleExistsAsync(role)) {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
 
     var seeder = new DatabaseSeeder(dbContext, userManager);
     await seeder.SeedAsync();

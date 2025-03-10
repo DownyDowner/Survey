@@ -1,6 +1,7 @@
 ﻿namespace SurveyAPI.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SurveyAPI.Constants;
 using SurveyAPI.Entities;
 using System;
 using System.Collections.Generic;
@@ -101,26 +102,23 @@ public class DatabaseSeeder {
         await _context.Set<QuestionEntity>().AddRangeAsync(questions);
         await _context.SaveChangesAsync();
 
-        var users = new List<IdentityUser>
+        var users = new (string Email, string Role)[]
         {
-            new IdentityUser { UserName = "user1@example.com", Email = "user1@example.com" },
-            new IdentityUser { UserName = "user2@example.com", Email = "user2@example.com" },
-            new IdentityUser { UserName = "user3@example.com", Email = "user3@example.com" }
+            ("admin@example.com", RoleConstants.ADMIN),
+            ("user1@example.com", RoleConstants.USER),
+            ("user2@example.com", RoleConstants.USER)
         };
 
-        foreach (var user in users) {
-            var result = await _userManager.CreateAsync(user, "Password@123");
-            if (!result.Succeeded) {
-                foreach (var error in result.Errors) {
-                    Console.WriteLine(error.Description);
-                }
-            }
+        foreach (var (email, role) in users) {
+            var user = new IdentityUser { UserName = email, Email = email };
+            await _userManager.CreateAsync(user, "Password@123");
+            await _userManager.AddToRoleAsync(user, role);
         }
 
+        var admin = await _userManager.FindByEmailAsync("admin@example.com");
         var user1 = await _userManager.FindByEmailAsync("user1@example.com");
         var user2 = await _userManager.FindByEmailAsync("user2@example.com");
-        var user3 = await _userManager.FindByEmailAsync("user3@example.com");
-        var allUsers = new List<IdentityUser> { user1, user2, user3 };
+        var allUsers = new List<IdentityUser> { admin, user1, user2 };
         var random = new Random();
 
         foreach (var user in allUsers) {
