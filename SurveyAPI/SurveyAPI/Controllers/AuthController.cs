@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using SurveyAPI.Constants;
 using SurveyAPI.Models.Auth;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -27,14 +29,52 @@ namespace SurveyAPI.Controllers {
             return Ok(token);
         }
 
+        [HttpPost("register")]
+        public async Task<ActionResult> Register([FromBody] RegisterModel model) {
+            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var result = await userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded) {
+                return BadRequest(result.Errors);
+            }
+
+            await userManager.AddToRoleAsync(user, RoleConstants.USER);
+
+            return Ok("User registered successfully");
+        }
+
+        [HttpPost("register-admin"), Authorize(Roles = RoleConstants.ADMIN)]
+        public async Task<ActionResult> RegisterAdmin([FromBody] RegisterModel model) {
+            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var result = await userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded) {
+                return BadRequest(result.Errors);
+            }
+
+            await userManager.AddToRoleAsync(user, RoleConstants.ADMIN);
+
+            return Ok("Admin registered successfully with role 'admin'");
+        }
+
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout() {
+            await signInManager.SignOutAsync();
+            return Ok("User logged out successfully");
+        }
+
         private string GenerateJwtToken(IdentityUser user) {
+            if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.Email)) {
+                throw new InvalidOperationException("UserName or Email cannot be null.");
+            }
+
             var claims = new List<Claim>
             {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Email, user.Email)
-    };
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
             var roles = userManager.GetRolesAsync(user).Result;
             foreach (var role in roles) {
