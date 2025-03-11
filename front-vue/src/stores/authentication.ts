@@ -23,8 +23,8 @@ export const useAuthenticationStore = defineStore("authentication", () => {
     try {
       isLoading.value = true;
       const response = await AuthApi.login(email, password);
-      if (response.accessToken) {
-        token.value = response.accessToken;
+      if (response) {
+        token.value = response;
         localStorage.setItem("Auth-Token", token.value);
       }
     } catch (error) {

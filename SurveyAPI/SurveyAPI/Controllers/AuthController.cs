@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SurveyAPI.Constants;
 using SurveyAPI.Models.Auth;
@@ -38,10 +39,22 @@ namespace SurveyAPI.Controllers {
             }
         }
 
-        [HttpPost("logout")]
+        [HttpPost("logout"), Authorize]
         public async Task<ActionResult> Logout() {
             await authService.Logout();
             return Ok("User logged out successfully");
+        }
+
+        [HttpGet("users/me"), Authorize]
+        public async Task<ActionResult<IdentityUser>> GetCurrentUser() {
+            try {
+                var user = await authService.GetCurrentUser(User);
+                return Ok(user);
+            } catch (UnauthorizedAccessException) {
+                return Unauthorized("User not authenticated");
+            } catch (InvalidOperationException) {
+                return NotFound("User not found"); 
+            }
         }
     }
 }

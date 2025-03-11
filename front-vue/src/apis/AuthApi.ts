@@ -1,8 +1,7 @@
-import type { AccessTokenResponse } from "../models/authentication/AccessTokenResponse";
 import axios from "axios";
 
 export abstract class AuthApi {
-  static API_URL = "https://localhost:7223";
+  static API_URL = "https://localhost:7223/api/auth";
 
   static async register(email: string, password: string): Promise<void> {
     await axios.post(`${AuthApi.API_URL}/register`, {
@@ -11,10 +10,7 @@ export abstract class AuthApi {
     });
   }
 
-  static async login(
-    email: string,
-    password: string
-  ): Promise<AccessTokenResponse> {
+  static async login(email: string, password: string): Promise<string> {
     const response = await axios.post(`${AuthApi.API_URL}/login`, {
       email,
       password,

@@ -79,5 +79,21 @@ namespace SurveyAPI.Services {
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public async Task<IdentityUser> GetCurrentUser(ClaimsPrincipal user) {
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null) {
+                throw new UnauthorizedAccessException("User not authenticated");
+            }
+
+            var currentUser = await userManager.FindByIdAsync(userId);
+
+            if (currentUser == null) {
+                throw new InvalidOperationException("User not found");
+            }
+
+            return currentUser;
+        }
     }
 }
