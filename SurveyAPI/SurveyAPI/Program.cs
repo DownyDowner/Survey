@@ -51,6 +51,7 @@ builder.Services.AddDbContext<DataContext>(options => {
     options.UseNpgsql(connectionString);
 });
 
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<QuestionService>();
 
 builder.Services.AddCors(options => {
