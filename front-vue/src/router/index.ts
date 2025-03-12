@@ -63,7 +63,7 @@ router.afterEach((to: RouteLocationNormalized) => {
 async function checkIsNotAuthenticated() {
   const authStore = useAuthenticationStore();
   await authStore.loadUser();
-  // if (authStore.token) return { name: NavigationConst.Home };
+  if (authStore.token) return { name: NavigationConst.nameHome };
 }
 
 async function checkIsAuthenticated(to: RouteLocationNormalized) {

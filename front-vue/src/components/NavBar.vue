@@ -26,7 +26,7 @@
         </v-list-item>
         <v-list-item></v-list-item>
         <v-list-item-content>
-          <v-list-item-title>{{ email }}</v-list-item-title>
+          <v-list-item-title>{{ email }} - {{ role }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item v-if="authStore.token" @click="logout">
@@ -63,7 +63,7 @@
       <v-spacer></v-spacer>
       <v-col cols="auto" class="d-none d-md-flex">
         <v-list-item class="d-flex align-center">
-          <v-list-item-subtitle>{{ email }}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{ email }} - {{ role }}</v-list-item-subtitle>
         </v-list-item>
       </v-col>
       <v-col cols="auto" class="d-none d-md-flex">
@@ -97,6 +97,7 @@ const currentTitle = ref("");
 const drawer = ref(false);
 
 const email = computed(() => authStore.email);
+const role = computed(() => authStore.role);
 
 onMounted(() => {
   displayRoute();
