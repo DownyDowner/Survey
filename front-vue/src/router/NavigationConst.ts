@@ -25,4 +25,9 @@ export class NavigationConst {
   public static readonly routeClosedDetails = "/closed/:id";
   public static readonly nameClosedDetails = "ClosedQuestionDetail";
   public static readonly titleClosedDetails = "Closed Question Details";
+
+  // Admin dashboard
+  public static readonly routeAdmin = "/admin";
+  public static readonly nameAdmin = "AdminDashboard";
+  public static readonly titleAdmin = "Admin Dashboard";
 }

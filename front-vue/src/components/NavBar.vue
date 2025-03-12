@@ -15,16 +15,26 @@
           <v-list-item-title>Home</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item @click="closedQuestions">
+        <v-list-item-icon>
+          <v-icon>mdi-chart-bar</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Closed Questions</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
+        v-if="authStore.role === RoleConstants.ADMIN"
+        @click="adminDashboard"
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-shield-crown</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Admin Dashboard</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-list-item>
-        <v-list-item @click="closedQuestions">
-          <v-list-item-icon>
-            <v-icon>mdi-chart-bar</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Closed Questions</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item></v-list-item>
         <v-list-item-content>
           <v-list-item-title>{{ email }} - {{ role }}</v-list-item-title>
         </v-list-item-content>
@@ -60,6 +70,16 @@
           <span>Closed Questions</span>
         </v-btn>
       </v-col>
+      <v-col
+        cols="auto"
+        class="d-none d-md-flex"
+        v-if="authStore.role === RoleConstants.ADMIN"
+      >
+        <v-btn @click.stop="adminDashboard" class="d-flex align-center">
+          <v-icon left>mdi-shield-crown</v-icon>
+          <span>Admin Dashboard</span>
+        </v-btn>
+      </v-col>
       <v-spacer></v-spacer>
       <v-col cols="auto" class="d-none d-md-flex">
         <v-list-item class="d-flex align-center">
@@ -88,6 +108,7 @@ import { useRoute, useRouter } from "vue-router";
 import { onMounted, watch } from "vue";
 import { useAuthenticationStore } from "../stores/authentication";
 import { NavigationConst } from "../router/NavigationConst";
+import { RoleConstants } from "../Constants/roleConstants";
 
 const authStore = useAuthenticationStore();
 const router = useRouter();
@@ -115,6 +136,10 @@ function home() {
 
 function closedQuestions() {
   router.push({ name: NavigationConst.nameClosed });
+}
+
+function adminDashboard() {
+  router.push({ name: NavigationConst.nameAdmin });
 }
 
 async function logout() {

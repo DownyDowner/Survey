@@ -7,6 +7,7 @@ import {
 import { useAuthenticationStore } from "../stores/authentication";
 import { NavigationConst } from "./NavigationConst";
 import LayoutConnected from "../layouts/LayoutConnected.vue";
+import { RoleConstants } from "../Constants/roleConstants";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -47,6 +48,13 @@ const routes: Array<RouteRecordRaw> = [
           import("../views/questions/ClosedQuestionsDetails.vue"),
         meta: { title: NavigationConst.titleClosedDetails },
       },
+      {
+        path: NavigationConst.routeAdmin,
+        name: NavigationConst.nameAdmin,
+        beforeEnter: checkIsAdmin,
+        component: () => import("../views/admin/AdminDashboard.vue"),
+        meta: { title: NavigationConst.titleAdmin },
+      },
     ],
   },
 ];
@@ -71,6 +79,13 @@ async function checkIsAuthenticated(to: RouteLocationNormalized) {
   await authStore.loadUser();
   if (!authStore.token)
     return { name: NavigationConst.nameLogin, query: { redirect: to.path } };
+}
+
+function checkIsAdmin() {
+  const authStore = useAuthenticationStore();
+  if (authStore.role !== RoleConstants.ADMIN) {
+    return { name: NavigationConst.nameHome };
+  }
 }
 
 export default router;
