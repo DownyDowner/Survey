@@ -34,6 +34,17 @@ export const useAuthenticationStore = defineStore("authentication", () => {
     }
   }
 
+  async function registerAdmin(email: string, password: string): Promise<void> {
+    try {
+      isLoading.value = true;
+      await AuthApi.registerAdmin(email, password);
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   async function login(email: string, password: string): Promise<void> {
     try {
       isLoading.value = true;
@@ -86,6 +97,7 @@ export const useAuthenticationStore = defineStore("authentication", () => {
     email,
     role,
     register,
+    registerAdmin,
     login,
     logout,
     loadUser,

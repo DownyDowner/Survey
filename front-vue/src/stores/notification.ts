@@ -7,5 +7,9 @@ export const useNotificationStore = defineStore("notification", () => {
     toast.error(message);
   };
 
-  return { showError };
+  const showSuccess = (message: string) => {
+    toast.success(message);
+  };
+
+  return { showError, showSuccess };
 });
