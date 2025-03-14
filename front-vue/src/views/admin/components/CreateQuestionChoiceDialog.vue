@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { ChoiceFull } from "../../../models/question/ChoiceFull";
+import { ChoiceSave } from "../../../models/question/ChoiceSave";
 
 const isOpen = ref<boolean>(false);
 const isValid = ref<boolean>(false);
@@ -67,7 +67,7 @@ const choiceName = ref<string>("");
 const choiceNameRules = [(v: string) => !!v || "Choice name is required"];
 
 const emit = defineEmits<{
-  (e: "onChoiceAdded", model: ChoiceFull): void;
+  (e: "onChoiceAdded", model: ChoiceSave): void;
 }>();
 
 const open = () => {
@@ -82,8 +82,7 @@ const close = () => {
 function addChoice() {
   if (!choiceName.value.trim()) return;
 
-  const choice = new ChoiceFull({
-    id: Date.now().toString(),
+  const choice = new ChoiceSave({
     name: choiceName.value,
   });
 

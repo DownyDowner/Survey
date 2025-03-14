@@ -10,7 +10,7 @@ namespace SurveyAPI.Controllers {
     [ApiController]
     public class QuestionController(QuestionService service, UserManager<IdentityUser> userManager) : ControllerBase {
         [HttpPost, Authorize(Roles = RoleConstants.ADMIN)]
-        public async Task<ActionResult<Guid>> Create([FromBody] QuestionFull question) {
+        public async Task<ActionResult<Guid>> Create([FromBody] QuestionSave question) {
             return await service.Create(question);
         }
 
@@ -22,11 +22,6 @@ namespace SurveyAPI.Controllers {
         [HttpGet("closed"), Authorize]
         public async Task<ActionResult<List<QuestionList>>> GetAllClosedQuestions() {
             return await service.GetAllClosedQuestions();
-        }
-
-        [HttpGet("{id}"), Authorize]
-        public async Task<ActionResult<QuestionFull>> GetQuestion([FromRoute] Guid id) { 
-            return await service.GetQuestion(id);
         }
 
         [HttpGet("{id}/stats"), Authorize]

@@ -5,7 +5,7 @@ using SurveyAPI.Models;
 namespace SurveyAPI.Services {
     public class QuestionService(DataContext dataContext) {
 
-        public async Task<Guid> Create(QuestionFull question) {
+        public async Task<Guid> Create(QuestionSave question) {
             var entity = question.ToEntity();
             await dataContext.Questions.AddAsync(entity);
             await dataContext.SaveChangesAsync();
@@ -33,17 +33,6 @@ namespace SurveyAPI.Services {
                 .ToListAsync();
 
             return entities.Select(e => e.ToDTOList()).ToList();
-        }
-
-        public async Task<QuestionFull> GetQuestion(Guid id) {
-            var entity = await dataContext.Questions
-                .Include(e => e.Choices)
-                .FirstOrDefaultAsync(e => e.Id == id);
-
-            if (entity == null)
-                throw new InvalidOperationException();
-
-            return entity.ToDTOFull();
         }
 
         public async Task<QuestionStats> GetQuestionStats(Guid id) {

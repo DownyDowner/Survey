@@ -9,8 +9,7 @@ namespace SurveyAPI.Models {
             EndDate = entity.EndDate,
         };
 
-        public static QuestionEntity ToEntity(this QuestionFull question) => new() {
-            Id = question.Id,
+        public static QuestionEntity ToEntity(this QuestionSave question) => new() {
             Name = question.Name.Trim(),
             BeginDate = question.BeginDate,
             EndDate = question.EndDate,
@@ -18,22 +17,11 @@ namespace SurveyAPI.Models {
             Choices = question.Choices.Select(c => c.ToEntity()).ToList(),
         };
 
-        public static ChoiceEntity ToEntity(this ChoiceFull choice) => new() {
-            Id = choice.Id,
+        public static ChoiceEntity ToEntity(this ChoiceSave choice) => new() {
             Name = choice.Name.Trim(),
         };
 
-        public static QuestionFull ToDTOFull(this QuestionEntity entity) => new() {
-            Id = entity.Id,
-            Name = entity.Name,
-            BeginDate = entity.BeginDate,
-            EndDate = entity.EndDate,
-            Multiple = entity.Multiple,
-            Choices = entity.Choices?.Select(c => c.ToDTOFull()).ToList() ?? new List<ChoiceFull>()
-        };
-
-        public static ChoiceFull ToDTOFull(this ChoiceEntity entity) => new() {
-            Id = entity.Id,
+        public static ChoiceSave ToDTOFull(this ChoiceEntity entity) => new() {
             Name = entity.Name,
         };
 

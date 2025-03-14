@@ -1,4 +1,3 @@
-import { QuestionFull } from "./../models/question/QuestionFull";
 import axios from "axios";
 import { QuestionList, QuestionListDTO } from "../models/question/QuestionList";
 import { useAuthenticationStore } from "../stores/authentication";
@@ -6,6 +5,7 @@ import {
   QuestionStats,
   QuestionStatsDTO,
 } from "../models/question/QuestionStats";
+import { QuestionSave } from "../models/question/QuestionSave";
 
 export abstract class QuestionApi {
   static API_URL = "https://localhost:7223/api/questions";
@@ -47,7 +47,7 @@ export abstract class QuestionApi {
     return new QuestionStats(response.data);
   }
 
-  static async create(question: QuestionFull): Promise<string> {
+  static async create(question: QuestionSave): Promise<string> {
     const response = await axios.post(QuestionApi.API_URL, question, {
       headers: { Authorization: "Bearer " + this.authStore.token },
       responseType: "json",

@@ -117,11 +117,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { ChoiceFull } from "../../../models/question/ChoiceFull";
 import CreateQuestionChoiceDialog from "./CreateQuestionChoiceDialog.vue";
-import { QuestionFull } from "../../../models/question/QuestionFull";
 import { useQuestionStore } from "../../../stores/question";
 import { useNotificationStore } from "../../../stores/notification";
+import { ChoiceSave } from "../../../models/question/ChoiceSave";
+import { QuestionSave } from "../../../models/question/QuestionSave";
 
 const questionStore = useQuestionStore();
 const notificationStore = useNotificationStore();
@@ -139,7 +139,7 @@ const questionName = ref("");
 const isMultiple = ref(false);
 const beginDate = ref(today);
 const endDate = ref("");
-const choices = ref<ChoiceFull[]>([]);
+const choices = ref<ChoiceSave[]>([]);
 
 const questionNameRules = [(v: string) => !!v || "Question name is required"];
 const isValidDate = (date: string): boolean => {
@@ -174,10 +174,10 @@ const close = () => {
 };
 
 function openCreateQuestionChoiceDialog() {
-  createQuestionChoiceDialog.value.open();
+  createQuestionChoiceDialog.value?.open();
 }
 
-function onChoiceAdded(choice: ChoiceFull) {
+function onChoiceAdded(choice: ChoiceSave) {
   choices.value.push(choice);
 }
 
@@ -188,20 +188,18 @@ function removeChoice(index: number) {
 async function saveQuestion() {
   try {
     isLoading.value = true;
-    const question = new QuestionFull({
-      id: "",
+    const question = new QuestionSave({
       name: questionName.value,
       beginDate: new Date(beginDate.value).toISOString(),
       endDate: new Date(endDate.value).toISOString(),
       multiple: isMultiple.value,
       choices: choices.value.map((choice) => ({
-        id: "",
         name: choice.name,
       })),
     });
-    question.id = await questionStore.create(question);
+    const questionId = await questionStore.create(question);
     notificationStore.showSuccess(
-      `Question "${question.id}" has been successfully saved.`
+      `Question "${questionId}" has been successfully saved.`
     );
     console.log("Question", question);
     close();
