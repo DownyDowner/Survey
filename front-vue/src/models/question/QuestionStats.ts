@@ -1,4 +1,4 @@
-import { ChoiceStats } from "./ChoiceStats";
+import { ChoiceStats, ChoiceStatsDTO } from "./ChoiceStats";
 
 export class QuestionStatsDTO {
   id = "";
@@ -6,7 +6,7 @@ export class QuestionStatsDTO {
   beginDate = "";
   endDate = "";
   multiple = false;
-  choices: ChoiceStats[] = [];
+  choices: ChoiceStatsDTO[] = [];
 }
 
 export class QuestionStats extends QuestionStatsDTO {

@@ -10,7 +10,7 @@ namespace SurveyAPI.Controllers {
     [ApiController]
     public class QuestionController(QuestionService service, UserManager<IdentityUser> userManager) : ControllerBase {
         [HttpPost, Authorize(Roles = RoleConstants.ADMIN)]
-        public async Task<ActionResult<Guid>> Create(QuestionFull question) {
+        public async Task<ActionResult<Guid>> Create([FromBody] QuestionFull question) {
             return await service.Create(question);
         }
 

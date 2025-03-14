@@ -11,7 +11,7 @@ namespace SurveyAPI.Models {
 
         public static QuestionEntity ToEntity(this QuestionFull question) => new() {
             Id = question.Id,
-            Name = question.Name,
+            Name = question.Name.Trim(),
             BeginDate = question.BeginDate,
             EndDate = question.EndDate,
             Multiple = question.Multiple,
@@ -20,7 +20,7 @@ namespace SurveyAPI.Models {
 
         public static ChoiceEntity ToEntity(this ChoiceFull choice) => new() {
             Id = choice.Id,
-            Name = choice.Name,
+            Name = choice.Name.Trim(),
         };
 
         public static QuestionFull ToDTOFull(this QuestionEntity entity) => new() {

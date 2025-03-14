@@ -1,3 +1,4 @@
+import { QuestionFull } from "./../models/question/QuestionFull";
 import axios from "axios";
 import { QuestionList, QuestionListDTO } from "../models/question/QuestionList";
 import { useAuthenticationStore } from "../stores/authentication";
@@ -44,5 +45,14 @@ export abstract class QuestionApi {
     );
 
     return new QuestionStats(response.data);
+  }
+
+  static async create(question: QuestionFull): Promise<string> {
+    const response = await axios.post(QuestionApi.API_URL, question, {
+      headers: { Authorization: "Bearer " + this.authStore.token },
+      responseType: "json",
+    });
+
+    return response.data;
   }
 }

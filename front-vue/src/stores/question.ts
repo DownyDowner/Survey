@@ -3,6 +3,7 @@ import { Ref, ref } from "vue";
 import { QuestionList } from "../models/question/QuestionList";
 import { QuestionApi } from "../apis/QuestionApi";
 import { QuestionStats } from "../models/question/QuestionStats";
+import { QuestionFull } from "../models/question/QuestionFull";
 
 export const useQuestionStore = defineStore("question", () => {
   const isLoading = ref(false);
@@ -42,6 +43,17 @@ export const useQuestionStore = defineStore("question", () => {
     }
   }
 
+  async function create(question: QuestionFull): Promise<string> {
+    try {
+      isLoading.value = true;
+      return await QuestionApi.create(question);
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   return {
     isLoading,
     activeQuestions,
@@ -49,5 +61,6 @@ export const useQuestionStore = defineStore("question", () => {
     getAllActiveQuestions,
     getAllClosedQuestions,
     getQuestionStats,
+    create,
   };
 });
