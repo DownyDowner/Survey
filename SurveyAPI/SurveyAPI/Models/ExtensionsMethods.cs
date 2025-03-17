@@ -21,10 +21,6 @@ namespace SurveyAPI.Models {
             Name = choice.Name.Trim(),
         };
 
-        public static ChoiceSave ToDTOFull(this ChoiceEntity entity) => new() {
-            Name = entity.Name,
-        };
-
         public static ResponseEntity ToEntity(string userId, Guid choiceId, DateTime responseDate) => new() {
             IdUser = userId,
             IdChoice = choiceId,

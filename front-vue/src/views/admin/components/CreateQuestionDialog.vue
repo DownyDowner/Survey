@@ -80,6 +80,14 @@
                   </template>
                 </v-list-item>
               </v-list>
+              <v-alert
+                v-if="choicesError"
+                type="error"
+                variant="outlined"
+                class="mt-2"
+              >
+                You must add at least two choices.
+              </v-alert>
             </v-col>
           </v-row>
         </v-card-text>
@@ -116,7 +124,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import CreateQuestionChoiceDialog from "./CreateQuestionChoiceDialog.vue";
 import { useQuestionStore } from "../../../stores/question";
 import { useNotificationStore } from "../../../stores/notification";
@@ -159,6 +167,12 @@ const dateRules = {
       "Ending date must be after begin date",
   ],
 };
+const choicesError = ref(false);
+watchEffect(() => {
+  if (choices.value.length >= 2) {
+    choicesError.value = false;
+  }
+});
 
 const open = () => {
   isOpen.value = true;
@@ -188,21 +202,24 @@ function removeChoice(index: number) {
 async function saveQuestion() {
   try {
     isLoading.value = true;
-    const question = new QuestionSave({
-      name: questionName.value,
-      beginDate: new Date(beginDate.value).toISOString(),
-      endDate: new Date(endDate.value).toISOString(),
-      multiple: isMultiple.value,
-      choices: choices.value.map((choice) => ({
-        name: choice.name,
-      })),
-    });
-    const questionId = await questionStore.create(question);
-    notificationStore.showSuccess(
-      `Question "${questionId}" has been successfully saved.`
-    );
-    console.log("Question", question);
-    close();
+    if (choices.value.length < 2) {
+      choicesError.value = true;
+    } else {
+      const question = new QuestionSave({
+        name: questionName.value,
+        beginDate: new Date(beginDate.value).toISOString(),
+        endDate: new Date(endDate.value).toISOString(),
+        multiple: isMultiple.value,
+        choices: choices.value.map((choice) => ({
+          name: choice.name,
+        })),
+      });
+      const questionId = await questionStore.create(question);
+      notificationStore.showSuccess(
+        `Question "${questionId}" has been successfully saved.`
+      );
+      close();
+    }
   } catch (error) {
     notificationStore.showError(
       "Failed to save the question. Please try again."
