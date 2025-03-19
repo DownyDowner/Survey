@@ -55,4 +55,11 @@ export abstract class QuestionApi {
 
     return response.data;
   }
+
+  static async deleteQuestion(id: string): Promise<void> {
+    await axios.delete(`${QuestionApi.API_URL}/${id}`, {
+      headers: { Authorization: "Bearer " + this.authStore.token },
+      responseType: "json",
+    });
+  }
 }

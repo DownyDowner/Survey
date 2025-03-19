@@ -4,6 +4,7 @@
       ref="questionList"
       :questions="questionStore.activeQuestions"
       :is-closed="false"
+      @on-question-deleted="loadActiveQuestions"
     />
   </v-container>
 </template>
