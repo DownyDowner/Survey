@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SurveyAPI.Data;
 using SurveyAPI.Models;
 
@@ -11,6 +12,17 @@ namespace SurveyAPI.Services {
             await dataContext.SaveChangesAsync();
 
             return entity.Id;
+        }
+
+        public async Task Delete(Guid id) {
+            var question = await dataContext.Questions.FindAsync(id);
+
+            if (question == null) {
+                throw new KeyNotFoundException("Question not found");
+            }
+
+            dataContext.Questions.Remove(question);
+            await dataContext.SaveChangesAsync();
         }
 
         public async Task<List<QuestionList>> GetAllActiveQuestions() {
