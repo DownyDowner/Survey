@@ -134,6 +134,10 @@ import { QuestionSave } from "../../../models/question/QuestionSave";
 const questionStore = useQuestionStore();
 const notificationStore = useNotificationStore();
 
+const emit = defineEmits<{
+  (e: "onQuestionAdded"): void;
+}>();
+
 const isOpen = ref(false);
 const isValid = ref(false);
 const isLoading = ref(false);
@@ -218,6 +222,7 @@ async function saveQuestion() {
       notificationStore.showSuccess(
         `Question "${questionId}" has been successfully saved.`
       );
+      emit("onQuestionAdded");
       close();
     }
   } catch (error) {
