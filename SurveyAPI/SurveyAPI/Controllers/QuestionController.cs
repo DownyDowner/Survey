@@ -14,6 +14,16 @@ namespace SurveyAPI.Controllers {
             return await service.Create(question);
         }
 
+        [HttpDelete("{id}"), Authorize(Roles = RoleConstants.ADMIN)]
+        public async Task<ActionResult> Delete([FromRoute] Guid id) {
+            try {
+                await service.Delete(id);
+                return Ok();
+            } catch (KeyNotFoundException) {
+                return NotFound();
+            }
+        }
+
         [HttpGet("active"), Authorize]
         public async Task<ActionResult<List<QuestionList>>> GetAllActiveQuestions() {
             return await service.GetAllActiveQuestions();

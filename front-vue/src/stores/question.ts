@@ -54,6 +54,17 @@ export const useQuestionStore = defineStore("question", () => {
     }
   }
 
+  async function deleteQuestion(id: string): Promise<void> {
+    try {
+      isLoading.value = true;
+      await QuestionApi.deleteQuestion(id);
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   return {
     isLoading,
     activeQuestions,
@@ -62,5 +73,6 @@ export const useQuestionStore = defineStore("question", () => {
     getAllClosedQuestions,
     getQuestionStats,
     create,
+    deleteQuestion,
   };
 });
