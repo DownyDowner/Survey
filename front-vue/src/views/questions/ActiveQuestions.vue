@@ -32,6 +32,7 @@
           ref="questionList"
           :questions="filteredQuestions"
           :is-closed="false"
+          @on-question-deleted="loadActiveQuestions"
         />
       </v-col>
     </v-row>
