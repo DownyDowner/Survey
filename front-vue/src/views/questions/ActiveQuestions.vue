@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="4">
         <v-autocomplete
           clearable
-          label="Search"
+          label="Search by name"
           :items="questionStore.activeQuestions"
           hide-details
           item-title="name"
@@ -13,10 +13,28 @@
           v-model:search="searchQuery"
         />
       </v-col>
+      <v-col cols="12" md="3">
+        <v-text-field
+          label="Start Date"
+          type="date"
+          v-model="startDateFilter"
+          clearable
+          hide-details
+        />
+      </v-col>
+      <v-col cols="12" md="3">
+        <v-text-field
+          label="End Date"
+          type="date"
+          v-model="endDateFilter"
+          clearable
+          hide-details
+        />
+      </v-col>
       <v-col
         v-if="authenticationStore.role === RoleConstants.ADMIN"
         cols="12"
-        md="4"
+        md="2"
         class="d-flex justify-md-end"
       >
         <v-btn
@@ -58,15 +76,28 @@ const authenticationStore = useAuthenticationStore();
 
 const questionList = ref<InstanceType<typeof QuestionsList> | null>(null);
 const searchQuery = ref("");
+const startDateFilter = ref<string | null>(null);
+const endDateFilter = ref<string | null>(null);
 const createQuestionDialog = ref<InstanceType<
   typeof CreateQuestionDialog
 > | null>(null);
 
 const filteredQuestions = computed(() => {
-  if (!searchQuery.value) return questionStore.activeQuestions;
-  return questionStore.activeQuestions.filter((q) =>
-    q.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  return questionStore.activeQuestions.filter((q) => {
+    const matchesSearch = searchQuery.value
+      ? q.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      : true;
+
+    const matchesStartDate = startDateFilter.value
+      ? new Date(q.beginDate) >= new Date(startDateFilter.value)
+      : true;
+
+    const matchesEndDate = endDateFilter.value
+      ? new Date(q.endDate) <= new Date(endDateFilter.value)
+      : true;
+
+    return matchesSearch && matchesStartDate && matchesEndDate;
+  });
 });
 
 onMounted(async () => {
