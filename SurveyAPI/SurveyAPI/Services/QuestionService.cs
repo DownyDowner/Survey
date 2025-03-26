@@ -100,5 +100,24 @@ namespace SurveyAPI.Services {
 
             await dataContext.SaveChangesAsync();
         }
+
+        public async Task<QuestionFull> GetQuestionWithUserVotes(Guid id, string userId) {
+            var entity = await dataContext.Questions
+            .Include(q => q.Choices!)
+                .ThenInclude(c => c.Responses)
+            .FirstOrDefaultAsync(q => q.Id == id);
+
+            if (entity == null)
+                throw new InvalidOperationException("Question not found.");
+
+            var userVotes = entity.Choices?
+                .Where(c => c.Responses != null)
+                .SelectMany(c => c.Responses!)
+                .Where(r => r.IdUser == userId)
+                .Select(r => r.IdChoice)
+                .ToList() ?? new List<Guid>();
+
+            return entity.ToDTOFull(userVotes);
+        }
     }
 }

@@ -34,6 +34,21 @@ namespace SurveyAPI.Controllers {
             return await service.GetAllClosedQuestions();
         }
 
+        [HttpGet("{id}"), Authorize]
+        public async Task<ActionResult<QuestionFull>> GetQuestionWithUserVotes([FromRoute] Guid id) {
+            try {
+                string? userId = userManager.GetUserId(User);
+
+                if (string.IsNullOrEmpty(userId)) {
+                    return Unauthorized("User is not authorized.");
+                }
+
+                return await service.GetQuestionWithUserVotes(id, userId);
+            } catch (InvalidOperationException) {
+                return NotFound("Question not found.");
+            }
+        }
+
         [HttpGet("{id}/stats"), Authorize]
         public async Task<ActionResult<QuestionStats>> GetQuestionStats([FromRoute] Guid id) {
             return await service.GetQuestionStats(id);
@@ -44,7 +59,7 @@ namespace SurveyAPI.Controllers {
             string? userId = userManager.GetUserId(User);
 
             if (string.IsNullOrEmpty(userId)) {
-                return Unauthorized(new { Message = "User is not authorized" });
+                return Unauthorized("User is not authorized.");
             }
 
             await service.Submit(id, userId, choiceIds);

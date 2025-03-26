@@ -26,5 +26,20 @@ namespace SurveyAPI.Models {
             IdChoice = choiceId,
             ResponseDate = responseDate
         };
+
+        public static QuestionFull ToDTOFull(this QuestionEntity entity, List<Guid> userVotes) => new() {
+            Id = entity.Id,
+            Name = entity.Name,
+            BeginDate = entity.BeginDate,
+            EndDate = entity.EndDate,
+            Multiple = entity.Multiple,
+            Choices = entity.Choices?.Select(c => c.ToDTOFull()).ToList() ?? new List<ChoiceFull>(),
+            UserVotes = userVotes
+        };
+
+        public static ChoiceFull ToDTOFull(this ChoiceEntity entity) => new() {
+            Id = entity.Id,
+            Name = entity.Name
+        };
     }
 }
