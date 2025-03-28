@@ -67,8 +67,12 @@ namespace SurveyAPI.Services {
             if (question == null)
                 throw new InvalidOperationException("Question not found.");
 
+            if (question.EndDate > DateTime.Now)
+                throw new InvalidOperationException("Statistics not available. Question is still active.");
+
             return question;
         }
+
 
         public async Task Submit(Guid id, string userId, List<Guid> choiceIds) {
             var entity = await dataContext.Questions
@@ -109,6 +113,9 @@ namespace SurveyAPI.Services {
 
             if (entity == null)
                 throw new InvalidOperationException("Question not found.");
+
+            if (DateTime.Now < entity.BeginDate || DateTime.Now > entity.EndDate)
+                throw new InvalidOperationException("Question not active.");
 
             var userVotes = entity.Choices?
                 .Where(c => c.Responses != null)

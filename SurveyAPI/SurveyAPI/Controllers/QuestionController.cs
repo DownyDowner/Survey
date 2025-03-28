@@ -44,14 +44,18 @@ namespace SurveyAPI.Controllers {
                 }
 
                 return await service.GetQuestionWithUserVotes(id, userId);
-            } catch (InvalidOperationException) {
-                return NotFound("Question not found.");
+            } catch (InvalidOperationException ex) {
+                return NotFound(ex.Message);
             }
         }
 
         [HttpGet("{id}/stats"), Authorize]
         public async Task<ActionResult<QuestionStats>> GetQuestionStats([FromRoute] Guid id) {
-            return await service.GetQuestionStats(id);
+            try {
+                return await service.GetQuestionStats(id);
+            } catch (InvalidOperationException ex) {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPost("{id}/submit"), Authorize]
