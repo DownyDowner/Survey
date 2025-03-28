@@ -16,6 +16,11 @@ export class NavigationConst {
   public static readonly nameHome = "Home";
   public static readonly titleHome = "Home";
 
+  // Active question details
+  public static readonly routeActiveDetails = "/active/:id";
+  public static readonly nameActiveDetails = "ActiveQuestionDetail";
+  public static readonly titleActiveDetails = "Active Question Details";
+
   // List closed questions
   public static readonly routeClosed = "/closed";
   public static readonly nameClosed = "ClosedQuestions";

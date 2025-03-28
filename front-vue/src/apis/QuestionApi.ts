@@ -6,6 +6,7 @@ import {
   QuestionStatsDTO,
 } from "../models/question/QuestionStats";
 import { QuestionSave } from "../models/question/QuestionSave";
+import { QuestionFull, QuestionFullDTO } from "../models/question/QuestionFull";
 
 export abstract class QuestionApi {
   static API_URL = "https://localhost:7223/api/questions";
@@ -33,6 +34,15 @@ export abstract class QuestionApi {
     );
 
     return response.data.map((d) => new QuestionList(d));
+  }
+
+  static async getQuestionWithUserVotes(id: string): Promise<QuestionFull> {
+    const response = await axios.get<QuestionFullDTO>(`${this.API_URL}/${id}`, {
+      headers: { Authorization: "Bearer " + this.authStore.token },
+      responseType: "json",
+    });
+
+    return new QuestionFull(response.data);
   }
 
   static async getQuestionStats(id: string): Promise<QuestionStats> {

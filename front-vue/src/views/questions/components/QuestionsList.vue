@@ -69,6 +69,11 @@ function openDetailsQuestion(question: QuestionList) {
       name: NavigationConst.nameClosedDetails,
       params: { id: question.id },
     });
+  } else {
+    router.push({
+      name: NavigationConst.nameActiveDetails,
+      params: { id: question.id },
+    });
   }
 }
 

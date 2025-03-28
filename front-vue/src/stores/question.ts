@@ -4,6 +4,7 @@ import { QuestionList } from "../models/question/QuestionList";
 import { QuestionApi } from "../apis/QuestionApi";
 import { QuestionStats } from "../models/question/QuestionStats";
 import { QuestionSave } from "../models/question/QuestionSave";
+import { QuestionFull } from "../models/question/QuestionFull";
 
 export const useQuestionStore = defineStore("question", () => {
   const isLoading = ref(false);
@@ -25,6 +26,17 @@ export const useQuestionStore = defineStore("question", () => {
     try {
       isLoading.value = true;
       closedQuestions.value = await QuestionApi.getAllClosedQuestions();
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function getQuestionWithUserVotes(id: string): Promise<QuestionFull> {
+    try {
+      isLoading.value = true;
+      return QuestionApi.getQuestionWithUserVotes(id);
     } catch (error) {
       throw error;
     } finally {
@@ -71,6 +83,7 @@ export const useQuestionStore = defineStore("question", () => {
     closedQuestions,
     getAllActiveQuestions,
     getAllClosedQuestions,
+    getQuestionWithUserVotes,
     getQuestionStats,
     create,
     deleteQuestion,
