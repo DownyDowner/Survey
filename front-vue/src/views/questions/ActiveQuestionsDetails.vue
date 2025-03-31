@@ -26,6 +26,34 @@
         readonly
       />
     </v-col>
+    <v-col cols="12">
+      <v-container fluid class="d-flex align-center justify-center">
+        <v-card title="Choices" rounded="lg">
+          <v-card-text>
+            <v-radio-group v-if="!question.multiple" :readonly="!canVote">
+              <v-radio
+                v-for="choice in question.choices"
+                :key="choice.id"
+                :label="choice.name"
+                :value="choice.id"
+              />
+            </v-radio-group>
+
+            <div v-else>
+              <v-checkbox
+                v-for="choice in question.choices"
+                :key="choice.id"
+                :label="choice.name"
+                :readonly="!canVote"
+              />
+            </div>
+          </v-card-text>
+          <v-card-actions v-if="canVote">
+            <v-btn>Submit</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-container>
+    </v-col>
   </v-row>
 </template>
 
