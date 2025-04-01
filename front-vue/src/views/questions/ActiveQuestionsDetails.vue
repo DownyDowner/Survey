@@ -30,7 +30,11 @@
       <v-container fluid class="d-flex align-center justify-center">
         <v-card title="Choices" rounded="lg">
           <v-card-text>
-            <v-radio-group v-if="!question.multiple" :readonly="!canVote">
+            <v-radio-group
+              v-if="!question.multiple"
+              v-model="selected"
+              :readonly="!canVote"
+            >
               <v-radio
                 v-for="choice in question.choices"
                 :key="choice.id"
@@ -44,6 +48,8 @@
                 v-for="choice in question.choices"
                 :key="choice.id"
                 :label="choice.name"
+                v-model="selected"
+                :value="choice.id"
                 :readonly="!canVote"
               />
             </div>
@@ -71,6 +77,8 @@ const notificationStore = useNotificationStore();
 const question: Ref<QuestionFull> = ref(new QuestionFull(null));
 const canVote = ref(false);
 
+const selected = ref<string | string[]>([]);
+
 const formattedBeginDate = computed({
   get: () =>
     question.value.beginDate
@@ -93,6 +101,12 @@ const formattedEndDate = computed({
 
 onMounted(async () => {
   await loadQuestion();
+
+  if (!question.value.multiple) {
+    selected.value = question.value.userVotes[0] || "";
+  } else {
+    selected.value = [...question.value.userVotes];
+  }
 });
 
 async function loadQuestion() {
