@@ -72,4 +72,11 @@ export abstract class QuestionApi {
       responseType: "json",
     });
   }
+
+  static async submit(id: string, response: string[]): Promise<void> {
+    await axios.post(`${this.API_URL}/${id}/submit`, response, {
+      headers: { Authorization: "Bearer " + this.authStore.token },
+      responseType: "json",
+    });
+  }
 }

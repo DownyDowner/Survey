@@ -55,7 +55,17 @@
             </div>
           </v-card-text>
           <v-card-actions v-if="canVote">
-            <v-btn>Submit</v-btn>
+            <v-btn
+              type="submit"
+              class="ma-2 px-4"
+              color="success"
+              variant="flat"
+              size="large"
+              :disabled="selected.length <= 0"
+              @click.stop="submit"
+            >
+              Submit
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-container>
@@ -119,6 +129,25 @@ async function loadQuestion() {
       "An error occurred while loading the question."
     );
     router.push({ name: NavigationConst.nameHome });
+  }
+}
+
+async function submit() {
+  try {
+    const selectedList = Array.isArray(selected.value)
+      ? selected.value
+      : [selected.value];
+
+    await questionStore.submit(question.value.id, selectedList);
+
+    notificationStore.showSuccess(
+      "Your answer has been submitted successfully!"
+    );
+    location.reload();
+  } catch (error) {
+    notificationStore.showError(
+      "Oops! Something went wrong while submitting your answer. Please try again."
+    );
   }
 }
 </script>

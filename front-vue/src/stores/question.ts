@@ -77,6 +77,17 @@ export const useQuestionStore = defineStore("question", () => {
     }
   }
 
+  async function submit(id: string, response: string[]): Promise<void> {
+    try {
+      isLoading.value = true;
+      await QuestionApi.submit(id, response);
+    } catch (error) {
+      throw error;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   return {
     isLoading,
     activeQuestions,
@@ -87,5 +98,6 @@ export const useQuestionStore = defineStore("question", () => {
     getQuestionStats,
     create,
     deleteQuestion,
+    submit,
   };
 });
